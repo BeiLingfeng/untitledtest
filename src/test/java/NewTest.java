@@ -3,7 +3,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
-
+@Ignore
 public class NewTest {
     public static void main(String[] args) {
         video_search();
