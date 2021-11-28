@@ -2,6 +2,8 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import jdk.nashorn.internal.ir.annotations.Ignore;
+import org.testng.annotations.Test;
 
 @Ignore
 public class NewTest {
