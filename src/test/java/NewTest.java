@@ -3,35 +3,73 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import jdk.nashorn.internal.ir.annotations.Ignore;
+
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
 import org.testng.annotations.Test;
 
 @Ignore
 public class NewTest {
-    public static void main(String[] args) {
-        video_search();
-    }
-    public static void video_search(){
-        //登录
+    private WebDriver driver;
+    protected DesiredCapabilities capabilities;
+    @BeforeTest
+    public void beforeTest() throws Exception {
+        capabilities = DesiredCapabilities.chrome();
+        capabilities.setBrowserName("chrome");
+        System.setProperty("webdriver.chrome.driver", getClass().getResource("/chromedriver.exe").getPath());
         ChromeOptions options = new ChromeOptions();
-        //添加配置文件
-        options.addArguments("--user-data-dir=C:\\Users\\lenovo\\AppData\\Local\\Google\\Chrome\\User Data");
-        System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver.exe");
-        //1.打开Chrome浏览器
-        ChromeDriver chromeDriver = new ChromeDriver(options);
-        // 与浏览器同步非常重要，必须等待浏览器加载完毕
-        //chromeDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        //2.访问bilibili
-        chromeDriver.get("https://www.bilibili.com");
-        //3.搜索框输入
-        chromeDriver.findElement(By.className("nav-search-input")).sendKeys("软件测试");
-        //4.点击搜索
-        chromeDriver.findElement(By.className("nav-search-btn")).click();
-        //5.等几秒 查看结果
+        options.addArguments("--start-maximized");
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+        driver = new ChromeDriver(capabilities);
+        driver.manage().window().maximize();
+
+    }
+
+    @AfterTest
+    public void afterTest(){
         try {
-            Thread.sleep(3000);
+            //等待5秒查看执行效果
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        chromeDriver.quit();
+        driver.quit();
+    }
+
+    @Test
+    public void testClass() {
+        driver.get("http://www.baidu.com");
+        System.out.println("heloo");
+        By inputBox = By.id("kw");
+        By searchButton = By.id("su");
+        //智能等待元素加载出来
+        intelligentWait(driver, 10, inputBox);
+        //智能等待元素加载出来
+        intelligentWait(driver, 10, searchButton);
+        driver.findElement(inputBox).sendKeys("中国地图");
+        driver.findElement(searchButton).click();
+    }
+
+    /**这是智能等待元素加载的方法*/
+    public void intelligentWait(WebDriver driver,int timeOut, final By by) {
+        try {
+            (new WebDriverWait(driver, timeOut)).until(new ExpectedCondition<Boolean>(){
+                public Boolean apply(WebDriver driver) {
+                    WebElement element = driver.findElement(by);
+                    return element.isDisplayed();
+                }
+            });
+        } catch (TimeoutException e) {
+            Assert.fail("超时L !! " + timeOut + " 秒之后还没找到元素 [" + by + "]", e);
+        }
     }
 }
