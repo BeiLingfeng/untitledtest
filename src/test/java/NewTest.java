@@ -21,7 +21,7 @@ public class NewTest {
     public void testSubtract() {
         calcuate = new Calculate();
         int result = calcuate.subtract(12, 2);
-        Assert.assertEquals(result,10000,"减法测试有问题"); //故意设置减法期望值为10000
+        Assert.assertEquals(result,10); //故意设置减法期望值为10000
     }
     @Test
     public void testMultiply() {
