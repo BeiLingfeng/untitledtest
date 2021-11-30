@@ -1,75 +1,38 @@
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import jdk.nashorn.internal.ir.annotations.Ignore;
-
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
 import org.testng.annotations.Test;
 
 @Ignore
 public class NewTest {
-    private WebDriver driver;
-    protected DesiredCapabilities capabilities;
-    @BeforeTest
-    public void beforeTest() throws Exception {
-        capabilities = DesiredCapabilities.chrome();
-        capabilities.setBrowserName("chrome");
-        System.setProperty("webdriver.chrome.driver", getClass().getResource("/chromedriver.exe").getPath());
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-        driver = new ChromeDriver(capabilities);
-        driver.manage().window().maximize();
-
-    }
-
-    @AfterTest
-    public void afterTest(){
-        try {
-            //等待5秒查看执行效果
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        driver.quit();
-    }
-
+    Calculate calcuate;
     @Test
-    public void testClass() {
-        driver.get("http://www.baidu.com");
-        System.out.println("heloo");
-        By inputBox = By.id("kw");
-        By searchButton = By.id("su");
-        //智能等待元素加载出来
-        intelligentWait(driver, 10, inputBox);
-        //智能等待元素加载出来
-        intelligentWait(driver, 10, searchButton);
-        driver.findElement(inputBox).sendKeys("中国地图");
-        driver.findElement(searchButton).click();
-    }
+    public void testAdd() {
+        calcuate = new Calculate();
+        int result = calcuate.add(2, 3);
+        Assert.assertEquals(result,5);
+        /*
+         * "加法有问题"：期望值和实际值不一致时，显示的信息
+         * 5 ：期望值
+         * result ：实际值
+         */
 
-    /**这是智能等待元素加载的方法*/
-    public void intelligentWait(WebDriver driver,int timeOut, final By by) {
-        try {
-            (new WebDriverWait(driver, timeOut)).until(new ExpectedCondition<Boolean>(){
-                public Boolean apply(WebDriver driver) {
-                    WebElement element = driver.findElement(by);
-                    return element.isDisplayed();
-                }
-            });
-        } catch (TimeoutException e) {
-            Assert.fail("超时L !! " + timeOut + " 秒之后还没找到元素 [" + by + "]", e);
-        }
+    }
+    @Test
+    public void testSubtract() {
+        calcuate = new Calculate();
+        int result = calcuate.subtract(12, 2);
+        Assert.assertEquals(result,10000,"减法测试有问题"); //故意设置减法期望值为10000
+    }
+    @Test
+    public void testMultiply() {
+        calcuate = new Calculate();
+        int result = calcuate.multiply(2, 3);
+        Assert.assertEquals(result, 6);
+    }
+    @Test
+    public void testDivide() {
+        calcuate = new Calculate();
+        int result = calcuate.divide(6, 3);
+        Assert.assertEquals(result, 2);
     }
 }
